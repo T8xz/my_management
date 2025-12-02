@@ -289,7 +289,8 @@ function openTransactionModal(type, existing = null) {
 
   // isi field kalau edit
   if (existing) {
-    document.getElementById("transaction-amount").value = existing.amount;
+    document.getElementById("transaction-amount").value =
+      existing.amount.toString();
     document.getElementById("transaction-description").value =
       existing.description;
     catSelect.value = existing.category;
@@ -315,9 +316,9 @@ function handleTransactionSubmit(e) {
   e.preventDefault();
   const id = document.getElementById("transaction-id").value;
   const type = document.getElementById("transaction-type").value;
-  const amount = Number(
-    document.getElementById("transaction-amount").value || 0
-  );
+  const rawAmount = document.getElementById("transaction-amount").value.trim();
+  const amount = Number(rawAmount.replace(/\./g, "").replace(/,/g, "")) || 0;
+
   const description = document
     .getElementById("transaction-description")
     .value.trim();
