@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Money Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="app-title">
+          <span class="logo-dot"></span>
+          <h1>Money Manager</h1>
+        </div>
+        <div class="app-date" id="current-date"></div>
+      </header>
+
+      <!-- MAIN PAGES -->
+      <main class="app-main">
+        <!-- DASHBOARD PAGE -->
+        <section class="page page-active" id="page-dashboard">
+          <div class="card card-balance">
+            <p class="card-label">Saldo Total</p>
+            <p class="card-value" id="total-balance">Rp 0</p>
+          </div>
+
+          <div class="btn-row btn-row-top">
+            <button class="btn btn-income" data-type="income">Pemasukan</button>
+            <button class="btn btn-expense" data-type="expense">
+              Pengeluaran
+            </button>
+          </div>
+
+          <div class="card">
+            <p class="card-title">Hari Ini</p>
+            <div class="card-row">
+              <span>Pemasukan</span>
+              <span id="today-income">Rp 0</span>
+            </div>
+            <div class="card-row">
+              <span>Pengeluaran</span>
+              <span id="today-expense">Rp 0</span>
+            </div>
+            <div class="card-row card-row-strong">
+              <span>Saldo Hari Ini</span>
+              <span id="today-balance">Rp 0</span>
+            </div>
+          </div>
+          <!-- MINGGU INI (BARU) -->
+          <div class="card">
+            <p class="card-title">Minggu Ini</p>
+            <div class="card-row">
+              <span>Pemasukan</span>
+              <span id="week-income">Rp 0</span>
+            </div>
+            <div class="card-row">
+              <span>Pengeluaran</span>
+              <span id="week-expense">Rp 0</span>
+            </div>
+            <div class="card-row card-row-strong">
+              <span>Saldo Minggu Ini</span>
+              <span id="week-balance">Rp 0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">Bulan Ini</p>
+            <div class="card-row">
+              <span>Pemasukan</span>
+              <span id="month-income">Rp 0</span>
+            </div>
+            <div class="card-row">
+              <span>Pengeluaran</span>
+              <span id="month-expense">Rp 0</span>
+            </div>
+            <div class="card-row card-row-strong">
+              <span>Saldo Bulan Ini</span>
+              <span id="month-balance">Rp 0</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY PAGE -->
+        <section class="page" id="page-history">
+          <div class="card card-filter">
+            <div class="filter-group">
+              <select id="history-range">
+                <option value="today">Hari ini</option>
+                <option value="week">Minggu ini</option>
+                <option value="month">Bulan ini</option>
+                <option value="all" selected>Semua</option>
+              </select>
+              <select id="history-category">
+                <option value="all">Semua kategori</option>
+                <!-- kategori lain diisi via JS -->
+              </select>
+            </div>
+          </div>
+
+          <div id="history-list" class="list">
+            <!-- card transaksi akan di-render di sini -->
+          </div>
+        </section>
+
+        <!-- SUMMARY PAGE -->
+        <section class="page" id="page-summary">
+          <!-- GRAFIK BULANAN -->
+          <div class="card">
+            <p class="card-title">Ringkasan Bulanan (6 Bulan Terakhir)</p>
+            <canvas id="monthly-chart" height="220"></canvas>
+          </div>
+
+          <!-- INSIGHT CEPAT -->
+          <div class="card">
+            <p class="card-title">Insight Bulan Ini</p>
+            <ul class="insight-list">
+              <li>
+                <span>Total Pengeluaran</span>
+                <span id="insight-total-expense">Rp 0</span>
+              </li>
+              <li>
+                <span>Pengeluaran Terbesar</span>
+                <span id="insight-top-category">-</span>
+              </li>
+              <li>
+                <span>Rata-rata / Hari</span>
+                <span id="insight-avg-per-day">Rp 0</span>
+              </li>
+              <li>
+                <span>Hari Paling Boros</span>
+                <span id="insight-worst-day">-</span>
+              </li>
+            </ul>
+          </div>
+          <!-- RINGKASAN MINGGU INI -->
+          <div class="card">
+            <p class="card-title">Ringkasan Minggu Ini</p>
+            <ul class="insight-list">
+              <li>
+                <span>Pemasukan</span>
+                <span id="week-income-summary">Rp 0</span>
+              </li>
+              <li>
+                <span>Pengeluaran</span>
+                <span id="week-expense-summary">Rp 0</span>
+              </li>
+              <li>
+                <span>Saldo</span>
+                <span id="week-balance-summary">Rp 0</span>
+              </li>
+              <li>
+                <span>Kategori terbesar</span>
+                <span id="week-top-category">-</span>
+              </li>
+            </ul>
+          </div>
+          <!-- PENGELUARAN PER KATEGORI -->
+          <div class="card">
+            <p class="card-title">Pengeluaran per Kategori (Bulan Ini)</p>
+            <canvas id="category-chart" height="220"></canvas>
+          </div>
+        </section>
+
+        <!-- SETTINGS PAGE -->
+        <section class="page" id="page-settings">
+          <div class="card">
+            <p class="card-title">Edit Kategori</p>
+
+            <ul id="category-list" class="category-list">
+              <!-- isi via JS -->
+            </ul>
+
+            <div class="category-manage">
+              <input
+                type="text"
+                id="input-new-category"
+                placeholder="Kategori baru…"
+              />
+              <button class="btn btn-small" id="btn-add-category">
+                Tambah
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <p class="card-title">Import CSV BRImo</p>
+            <input
+              type="file"
+              id="csv-input"
+              accept=".csv"
+              style="display: none"
+            />
+            <button id="btn-import-csv" class="btn-import">
+              Import CSV BRImo
+            </button>
+          </div>
+          <div class="card">
+            <p class="card-title">Data</p>
+            <button class="btn btn-full" id="btn-export">Export Data</button>
+            <label class="btn-import">
+              Import Data
+              <input
+                type="file"
+                id="input-import"
+                accept="application/json"
+                hidden
+              />
+            </label>
+            <button class="btn btn-full btn-danger" id="btn-reset">
+              Reset Semua Data
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- BOTTOM NAV -->
+      <nav class="app-nav">
+        <button class="nav-item nav-item-active" data-target="dashboard">
+          <i data-feather="home" class="nav-icon"></i>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-item" data-target="history">
+          <i data-feather="list" class="nav-icon"></i>
+          <span class="nav-label">Riwayat</span>
+        </button>
+        <button class="nav-item" data-target="summary">
+          <i data-feather="bar-chart-2" class="nav-icon"></i>
+          <span class="nav-label">Ringkasan</span>
+        </button>
+        <button class="nav-item" data-target="settings">
+          <i data-feather="settings" class="nav-icon"></i>
+          <span class="nav-label">Pengaturan</span>
+        </button>
+      </nav>
+
+      <!-- MODAL TRANSAKSI -->
+      <div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal">
+          <h2 id="modal-title">Tambah Transaksi</h2>
+          <form id="transaction-form">
+            <input type="hidden" id="transaction-id" />
+            <input type="hidden" id="transaction-type" />
+
+            <label>
+              Jumlah
+              <input
+                type="number"
+                id="transaction-amount"
+                required
+                min="0"
+                step="100"
+              />
+            </label>
+
+            <label>
+              Deskripsi
+              <input type="text" id="transaction-description" required />
+            </label>
+
+            <!-- Kategori untuk Pemasukan (radio) -->
+            <div
+              id="income-category-container"
+              class="income-cat-box"
+              style="display: none"
+            >
+              <p class="modal-label">Kategori</p>
+
+              <label class="income-radio">
+                <input type="radio" name="income-cat" value="Gaji" />
+                <span>Gaji</span>
+              </label>
+
+              <label class="income-radio">
+                <input type="radio" name="income-cat" value="Lainnya" />
+                <span>Lainnya</span>
+              </label>
+            </div>
+
+            <!-- Kategori untuk Pengeluaran (select) -->
+            <label id="expense-category-container" style="display: none">
+              Kategori
+              <select id="transaction-category">
+                <!-- isi via JS -->
+              </select>
+            </label>
+
+            <label>
+              Tanggal
+              <input type="date" id="transaction-date" required />
+            </label>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-outline" id="btn-cancel">
+                Batal
+              </button>
+              <button type="submit" class="btn" id="btn-save">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart.js via CDN (nanti dipakai di summary) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace();
+    </script>
+  </body>
+</html>
